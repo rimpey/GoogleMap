@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
 
     //https://developers.google.com/maps/tutorials/fundamentals/adding-a-google-map
@@ -96,52 +97,42 @@ $(document).ready(function () {
 
         //**** Circles ****
 
-        var circle_charing = new google.maps.Circle({
-            strokeColor: "#BE6D45",
-            strokeOpacity: 0.4,
-            strokeWeight: 0,
-            fillColor: "#BE6D45",
-            fillOpacity: 0.4,
-            map: map,
-            center: new google.maps.LatLng(51.508168, -0.124846),
-            radius: 1000 // radius in metres
-        });
+        // First, create an object containing LatLng and population for each city.
+        var stationmap = {};
 
-        var circle_waterloo_east = new google.maps.Circle({
-            strokeColor: '#BE6D45',
-            strokeOpacity: 0.4,
-            strokeWeight: 0,
-            fillColor: '#BE6D45',
-            fillOpacity: 0.4,
-            map: map,
-            center: new google.maps.LatLng(51.504076, -0.108873),
-            radius: 1000 // radius in metres
-        });
+        stationmap['charingcross'] = {
+          center: new google.maps.LatLng(51.508168, -0.124846)
+        };
+        stationmap['waterlooeast'] = {
+          center: new google.maps.LatLng(51.504076, -0.108873)
+        };
+        stationmap['cannonstreet'] = {
+          center: new google.maps.LatLng(51.511382, -0.090267)
+        };
+        stationmap['londonbridge'] = {
+          center: new google.maps.LatLng(51.505109, -0.086062)
+        };
 
-        var circle_cannon = new google.maps.Circle({
-            strokeColor: "#BE6D45",
-            strokeOpacity: 0.4,
-            strokeWeight: 0,
-            fillColor: "#BE6D45",
-            fillOpacity: 0.4,
-            map: map,
-            center: new google.maps.LatLng(51.511382, -0.090267),
-            radius: 1000 // radius in metres
-        });
+        var stationcircle;
 
-        var circle_london_bridge = new google.maps.Circle({
-            strokeColor: "#BE6D45",
-            strokeOpacity: 0.4,
-            strokeWeight: 0,
-            fillColor: '#BE6D45',
-            fillOpacity: 0.4,
-            map: map,
-            center: new google.maps.LatLng(51.505109, -0.086062),
-            radius: 1000 // radius in metres
-        });
+        //loop through the array of London locations to assign common properties to locations
+        for (var loc in stationmap){
+            var stationOptions = {
+                strokeColor: "#BE6D45",
+                strokeOpacity: 0.4,
+                strokeWeight: 0,
+                fillColor: "#BE6D45",
+                fillOpacity: 0.4,
+                map: map,
+                center: stationmap[loc].center,
+                radius: 1000 // radius in metres
+            };
+            //Add the circle for this london station
+            stationcircle = new google.maps.Circle(stationOptions);
+                
+        } //end loop through stations
 
-
-    }
+    } //end function initialize
 
     //Add an event listener to the window object that will call the initialize function once the page has loaded.
     //Calling initialize before the page has finished loading will cause problems, since the div it's looking for may 
@@ -149,5 +140,4 @@ $(document).ready(function () {
     google.maps.event.addDomListener(window, 'load', initialize);
 
 });
-
-            
+    
