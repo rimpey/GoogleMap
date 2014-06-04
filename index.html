@@ -10,15 +10,146 @@
                 height: 350px;
             }
         </style>
-    </head>
-    <body>
-        <div id="map"></div>
 
         <!-- load the Google Maps API -->
         <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
-        <!-- create and configure map with markers and circles -->
-        <script src="/js/script.js"></script>
+        <script>
 
+            //Create and configure the map
+            function initialize() {
+
+                var map_div = document.getElementById('map');
+
+                var map_options = {
+                    //center is a Google Maps LatLng object that tells the API where to center the map
+                    //Latitude and Longitude can be obtained either: from the URL in Google maps or 
+                    //right click the location on Google maps and select 'What's here' which will bring up the LatLng in the description
+                    center: new google.maps.LatLng(51.508809, -0.105663),
+                    //zoom is a number between 0 (farthest) and 22 that sets the zoom level of the map.
+                    zoom: 14,
+                    //mapTypeId is used to specify what type of map to use. Your choices are ROADMAP, SATELLITE, HYBRID, or TERRAIN.
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    disableDefaultUI: true,
+                    scrollwheel: false,
+                    //navigationControl: false,
+                    //mapTypeControl: false,
+                    //scaleControl: false,
+                    zoomControl: true,
+                    panControl: true,
+                    draggable: true,
+                    disableDoubleClickZoom: true
+                }
+                //https://developers.google.com/maps/documentation/javascript/styling
+                //Map features and stylers are combined into a style array, which is passed to the default map's MapOptions object, or to the StyledMapType constructor
+                //Styled Maps accept an array of map stylers which define the colors, visibility, and weight of featureTypes on the map.
+                //Stylers are color and visibility properties that can be applied to map features. 
+                //They define the display color through a combination of hue, color, and lightness/gamma values.
+                var styles = [{
+                    stylers: [                  // Greyscale
+                        {hue: "#ffffff" },
+                        { saturation: -100 }
+                    ]
+                }, {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [
+                        { lightness: 100 },
+                        { visibility: "simplified" }
+                    ]
+                }, {
+                    featureType: "road",
+                    elementType: "labels",
+                    stylers: [
+                        { visibility: "on" }
+                    ]
+                }];
+
+                //create a new google maps object
+                //the map object constructor takes two arguments:
+                //- reference to the div map will be loaded into and options for the map
+                var mapObj = new google.maps.Map(map_div, map_options);
+
+                mapObj.set('styles', styles);
+
+                //**** Markers ****
+
+                //assumption of how Google Maps might deal with passing map to Marker - odd would expect instance of marker to be added to map
+                //var google.maps.Marker = function (options) {
+                //    options.map.addMarker(this);    
+                //};
+
+
+                //**** Circles ****
+
+                // First, create an object containing LatLng and population for each city.
+                var stationmap = {};
+
+                stationmap['charingcross'] = {
+                    //circle and marker
+                    position: new google.maps.LatLng(51.508168, -0.124846),
+                    //marker
+                    icon: 'img/map-charingcross.png',
+                    title: 'London Charing Cross'
+                };
+                stationmap['waterlooeast'] = {
+                    position: new google.maps.LatLng(51.504076, -0.108873),
+                    icon: 'img/map-waterlooeast.png',
+                    title: 'Waterloo East'
+                };
+                stationmap['cannonstreet'] = {
+                    position: new google.maps.LatLng(51.511382, -0.090267),
+                    icon: 'img/map-cannonstreet.png',
+                    title: 'Cannon Street'
+                };
+                stationmap['londonbridge'] = {
+                    position: new google.maps.LatLng(51.505109, -0.086062),
+                    icon: 'img/map-londonbridge.png',
+                    title: 'London Bridge'
+                };
+
+                //loop through the array of London locations to assign common properties to locations
+                for (var loc in stationmap) {
+                    // create a marker with position, title and icon
+                    //var markerOptions = $.extend({ map: mapObj }, stationmap[loc]); -> could use however then creates dependency on jQuery library
+            
+                    var markerOptions = {
+                        map: mapObj,
+                        position: stationmap[loc].position,
+                        icon: stationmap[loc].icon,
+                        title: stationmap[loc].title
+                    };
+
+                    // create a circle with position
+                    var circleOptions = {
+                        strokeColor: "#BE6D45",
+                        strokeOpacity: 0.4,
+                        strokeWeight: 0,
+                        fillColor: "#BE6D45",
+                        fillOpacity: 0.4,
+                        map: mapObj, //here map object is assigned to property of circleOptions and then used to create instance of Map Circle
+                        center: stationmap[loc].position,
+                        radius: 1000 // radius in metres
+                    };
+                    //Add a marker
+                    //create a new marker instance which is added to the map passed in via the marker options/map property
+
+                    new google.maps.Marker(markerOptions);
+                    //Add the circle for this london station
+                    new google.maps.Circle(circleOptions);
+
+                } //end loop through stations
+
+            } //end function initialize
+
+            //Add an event listener to the window object that will call the initialize function once the page has loaded.
+            //Calling initialize before the page has finished loading will cause problems, since the div it's looking for may 
+            //not have been created yet; this function waits until the HTML elements on the page have been created before calling initialize.
+            google.maps.event.addDomListener(window, 'load', initialize);
+
+        </script>
+    </head>
+    <body>
+        <div id="map"></div>
     </body>
 </html>
