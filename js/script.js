@@ -1,4 +1,3 @@
-
 $(document).ready(function () {
 
     //https://developers.google.com/maps/tutorials/fundamentals/adding-a-google-map
@@ -59,41 +58,17 @@ $(document).ready(function () {
         //create a new google maps object
         //the map object constructor takes two arguments:
         //- reference to the div map will be loaded into and options for the map
-        var map = new google.maps.Map(map_div, map_options);
+        var mapObj = new google.maps.Map(map_div, map_options);
 
-        map.set('styles', styles);
+        mapObj.set('styles', styles);
 
         //**** Markers ****
 
-        //Specify the icon option on MarkerOptions to change the marker’s icon.
-        //The icon option can be either a string (the URL to the marker icon), or an Icon object. 
-        var marker_charing = new google.maps.Marker({
-            position: new google.maps.LatLng(51.508168, -0.124846),
-            icon: 'img/map-charingcross.png',
-            map: map,
-            title: 'London Charing Cross'
-        });
+        //assumption of how Google Maps might deal with passing map to Marker - odd would expect instance of marker to be added to map
+        //var google.maps.Marker = function (options) {
+        //    options.map.addMarker(this);    
+        //};
 
-        var marker_waterloo_east = new google.maps.Marker({
-            position: new google.maps.LatLng(51.504076, -0.108873),
-            icon: 'img/map-waterlooeast.png',
-            map: map,
-            title: 'Waterloo East'
-        });
-
-        var marker_cannon = new google.maps.Marker({
-            position: new google.maps.LatLng(51.511382, -0.090267),
-            icon: 'img/map-cannonstreet.png',
-            map: map,
-            title: 'Cannon Street'
-        });
-
-        var marker_london_bridge = new google.maps.Marker({
-            position: new google.maps.LatLng(51.505109, -0.086062),
-            icon: 'img/map-londonbridge.png',
-            map: map,
-            title: 'London Bridge'
-        });
 
         //**** Circles ****
 
@@ -101,35 +76,58 @@ $(document).ready(function () {
         var stationmap = {};
 
         stationmap['charingcross'] = {
-          center: new google.maps.LatLng(51.508168, -0.124846)
+            //circle and marker
+            position: new google.maps.LatLng(51.508168, -0.124846),
+            //marker
+            icon: 'img/map-charingcross.png',
+            title: 'London Charing Cross'
         };
         stationmap['waterlooeast'] = {
-          center: new google.maps.LatLng(51.504076, -0.108873)
+            position: new google.maps.LatLng(51.504076, -0.108873),
+            icon: 'img/map-waterlooeast.png',
+            title: 'Waterloo East'
         };
         stationmap['cannonstreet'] = {
-          center: new google.maps.LatLng(51.511382, -0.090267)
+            position: new google.maps.LatLng(51.511382, -0.090267),
+            icon: 'img/map-cannonstreet.png',
+            title: 'Cannon Street'
         };
         stationmap['londonbridge'] = {
-          center: new google.maps.LatLng(51.505109, -0.086062)
+            position: new google.maps.LatLng(51.505109, -0.086062),
+            icon: 'img/map-londonbridge.png',
+            title: 'London Bridge'
         };
 
-        var stationcircle;
-
         //loop through the array of London locations to assign common properties to locations
-        for (var loc in stationmap){
-            var stationOptions = {
+        for (var loc in stationmap) {
+            // create a marker with position, title and icon
+            //var markerOptions = $.extend({ map: mapObj }, stationmap[loc]); -> could use however then creates dependency on jQuery library
+            
+            var markerOptions = {
+                map: mapObj,
+                position: stationmap[loc].position,
+                icon: stationmap[loc].icon,
+                title: stationmap[loc].title
+            };
+
+            // create a circle with position
+            var circleOptions = {
                 strokeColor: "#BE6D45",
                 strokeOpacity: 0.4,
                 strokeWeight: 0,
                 fillColor: "#BE6D45",
                 fillOpacity: 0.4,
-                map: map,
-                center: stationmap[loc].center,
+                map: mapObj, //here map object is assigned to property of circleOptions and then used to create instance of Map Circle
+                center: stationmap[loc].position,
                 radius: 1000 // radius in metres
             };
+            //Add a marker
+            //create a new marker instance which is added to the map passed in via the marker options/map property
+
+            new google.maps.Marker(markerOptions);
             //Add the circle for this london station
-            stationcircle = new google.maps.Circle(stationOptions);
-                
+            new google.maps.Circle(circleOptions);
+
         } //end loop through stations
 
     } //end function initialize
@@ -140,4 +138,3 @@ $(document).ready(function () {
     google.maps.event.addDomListener(window, 'load', initialize);
 
 });
-    
