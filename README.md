@@ -39,7 +39,7 @@ Examples prior to the devised loop to create both marker and circles illustrated
 assigned to variables not used.
 
 
-Again the map object is added to the instance of marker/crcle created.
+![alt text](http://docs.rhondaimpey.com/img/googlemap.jpg "Google Maps")
 
   
 
