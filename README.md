@@ -1,3 +1,5 @@
+![alt text](http://docs.rhondaimpey.com/img/googlemap.jpg "Google Maps")
+
 GoogleMap
 =========
 
@@ -39,7 +41,7 @@ Examples prior to the devised loop to create both marker and circles illustrated
 assigned to variables not used.
 
 
-![alt text](http://docs.rhondaimpey.com/img/googlemap.jpg "Google Maps")
+
 
   
 
